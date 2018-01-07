@@ -4,9 +4,7 @@ library(shinydashboard)
 library(DT)
 
 
-## Only run this example in interactive R sessions
-
-  
+ 
   
 # Data: "iris"
 myData <- iris
