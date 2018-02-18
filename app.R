@@ -2,7 +2,7 @@
 library(shiny)
 library(shinydashboard)
 library(DT)
-
+library(ggplot2)
 
  
   
@@ -51,9 +51,6 @@ server <- function(session,input, output) {
 
 
   })
-  
-
-  
   
   
   # Tab 2 for Species selector and Record Id selector
@@ -122,7 +119,27 @@ server <- function(session,input, output) {
          "input$id_sel:", input$id_sel,"<br/>",
          "id_reactive()", paste0(id_reactive()),"<br/>")
   })
+  
+  #draw a histogram of the petal length selected by species
+  output$p_length_hist <- renderPlot({
+    myData <- subset(myData,myData$Species == species_reactive())
+    
+    ggplot(data = myData, aes(x=Petal.Length)) +
+      geom_histogram() +
+      labs(title= paste0(species_reactive(), "'s Petal Length Histogram"))
+  })
+  
+  #link to my github
+  url <- a("GitHub", href="https://github.com/yqzhong7/Multiple-selectors")
+  output$github <- renderUI({
+    tagList("Source code:", url)
+  })
 }
+
+  
+
+
+
 
 # Define UI for application that draws a histogram
 ui <- dashboardPage(
@@ -134,7 +151,8 @@ ui <- dashboardPage(
     sidebarMenu(
       id = "tabs",
       menuItem("Data Table", tabName = "DTtable", icon = icon("list")),
-      menuItem("Selectors", tabName = "selectors", icon = icon("bar-chart"))
+      menuItem("Selectors", tabName = "selectors", icon = icon("bar-chart")),
+      menuItem("About", tabName = "about", icon = icon("question-circle"))
     )
   ),
   
@@ -161,12 +179,28 @@ ui <- dashboardPage(
         tabName = "selectors",
         # Title
         h3("Iris Species and ID selectors"),
-        # Species Selecor
-        htmlOutput("species_sel2"),
-        # ID Selecor
-        htmlOutput("id_sel"),
-        # Print Selected Values
-        htmlOutput("selected_print")
+        fluidRow(
+          box(
+            # Species Selecor
+            htmlOutput("species_sel2"),
+            # ID Selecor
+            htmlOutput("id_sel"),
+            # Print Selected Values
+            htmlOutput("selected_print")),
+          # Histogram
+        box(plotOutput("p_length_hist"))
+        )
+      ),
+      
+      # Tab 3: About
+      tabItem(
+        tabName = "about",
+        h3("About this app"),
+        box(h4(
+          "This app demonstrates how to synchronize multiple selectInput and inputs from DT table"
+        ),
+        h4("Author: Yongqi Zhong"),
+        uiOutput("github"))
       )
     )
   )
