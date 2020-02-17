@@ -134,6 +134,12 @@ server <- function(session,input, output) {
   output$github <- renderUI({
     tagList("Source code:", url)
   })
+  
+  #link to my presentation slides
+  url2 <- a("Optimum Dashboard Presentation", href="https://biostat.wustl.edu/seminars/YZhong_Feb2118.pdf")
+  output$presentation <- renderUI({
+    tagList("My slides for the original Optimum Dashboard:", url2)
+  })
 }
 
   
@@ -200,7 +206,8 @@ ui <- dashboardPage(
           "This app demonstrates how to synchronize multiple selectInput and inputs from DT table"
         ),
         h4("Author: Yongqi Zhong"),
-        uiOutput("github"))
+        uiOutput("github"),
+        uiOutput("presentation"))
       )
     )
   )
